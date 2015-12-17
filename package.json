@@ -1,0 +1,19 @@
+{
+  "name": "branch-elements",
+  "version": "0.0.1",
+  "description": "bla",
+  "main": "branch-elements.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jap Mul <jap@branchonline.nl>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BranchOnline/branch-elements.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BranchOnline/branch-elements/issues"
+  },
+  "homepage": "https://github.com/BranchOnline/branch-elements#readme"
+}
