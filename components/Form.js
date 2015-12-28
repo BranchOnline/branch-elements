@@ -1,5 +1,6 @@
 var React    = require('react'),
-    ReactDOM = require('react-dom');
+    ReactDOM = require('react-dom'),
+    NotificationSystem = require('react-notification-system');
 
 module.exports = React.createClass({ getInitialState: function() {
         return {
@@ -34,12 +35,24 @@ module.exports = React.createClass({ getInitialState: function() {
 
         $.post(e.target.action, postData, function(response) {
             if (response.status === 'success') {
-                self.setState({errors: {}});
+                self.setState({errors: null});
+                self.props.onError(false);
                 if (typeof self.props.onPost === 'function') {
-                    self.props.onPost(postData);
+                    self.props.onPost(response);
                 }
+
+                self.refs.toasts.addNotification({
+                    message: 'Your data is successfully saved!',
+                    level: 'success'
+                });
             } else {
                 self.setState({errors: response.errors});
+                self.props.onError(true);
+
+                self.refs.toasts.addNotification({
+                    message: 'An error occured!',
+                    level: 'error'
+                });
             }
         });
         return false;
@@ -47,15 +60,38 @@ module.exports = React.createClass({ getInitialState: function() {
     closeForm: function() {
         ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
     },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState(nextProps);
+    },
+    onError: function(containsErrors) {
+        this.setState({ containsErrors: containsErrors });
+    },
     render: function() {
         var self     = this;
         var children = self.props.children;
 
-        children.forEach(function(item, index) {
-            if (self.state.errors !== null) {
-                children[index] = React.cloneElement(item, {errorHandler: self.getError.bind(self, item.key)});
-            }
-        });
+        if ((children.length === 1 || children.constructor !== Array)
+        && typeof children.props.tabs !== 'undefined' && children.props.tabs !== null
+           ) {
+            Object.keys(children.props.tabs).forEach(function(tab, index) {
+                var tabChildren = children.props.tabs[tab].props.children;
+                tabChildren.forEach(function(item, itemIndex) {
+                    if (self.state.errors !== null) {
+                        var error = self.getError(item.key);
+                        children.props.tabs[tab].props.children[itemIndex] = React.cloneElement(item, {error: error});
+                    }
+                });
+            });
+        } else {
+            children.forEach(function(item, index) {
+                if (self.state.errors !== null) {
+                    var error = self.getError(item.key);
+                    if (typeof error !== 'undefined') {
+                        children[index] = React.cloneElement(item, {error: error});
+                    }
+                }
+            });
+        }
 
         var cancelButton = null
         if (this.props.cancelButton) {
@@ -69,12 +105,14 @@ module.exports = React.createClass({ getInitialState: function() {
         return React.createElement(
             'form',
             {action: this.props.action, onSubmit: this.onSubmit},
-            [
-                children,
+            React.createElement('NotificationSystem', {ref: 'toasts'}),
+            children,
+            React.createElement(
+                'div',
+                {className: 'button-holder'},
                 cancelButton,
-                React.createElement('input', {type: 'submit', className: 'btn primary', key: 'submit'})
-            ]
+                React.createElement('input', {className: 'btn primary', key: 'submit'})
+            )
         );
     }
 });
-
