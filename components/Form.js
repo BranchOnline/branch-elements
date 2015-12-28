@@ -75,12 +75,15 @@ module.exports = React.createClass({ getInitialState: function() {
            ) {
             Object.keys(children.props.tabs).forEach(function(tab, index) {
                 var tabChildren = children.props.tabs[tab].props.children;
-                tabChildren.forEach(function(item, itemIndex) {
-                    if (self.state.errors !== null) {
-                        var error = self.getError(item.key);
-                        children.props.tabs[tab].props.children[itemIndex] = React.cloneElement(item, {error: error});
-                    }
-                });
+
+                if (tabChildren.constructor === Array) {
+                    tabChildren.forEach(function(item, itemIndex) {
+                        if (self.state.errors !== null) {
+                            var error = self.getError(item.key);
+                            children.props.tabs[tab].props.children[itemIndex] = React.cloneElement(item, {error: error});
+                        }
+                    });
+                }
             });
         } else {
             children.forEach(function(item, index) {
