@@ -37,7 +37,9 @@ module.exports = React.createClass({
         return React.createElement(
             'div',
             {className: classNames},
-            [componentLabel, child, errorField]
+            componentLabel,
+            child,
+            errorField
         );
     }
 });
