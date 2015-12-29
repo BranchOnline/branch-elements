@@ -76,7 +76,7 @@ module.exports = React.createClass({ getInitialState: function() {
             Object.keys(children.props.tabs).forEach(function(tab, index) {
                 var tabChildren = children.props.tabs[tab].props.children;
 
-                if (tabChildren.constructor === Array) {
+                if (typeof tabChildren !== 'undefined' && tabChildren.constructor === Array) {
                     tabChildren.forEach(function(item, itemIndex) {
                         if (self.state.errors !== null) {
                             var error = self.getError(item.key);
@@ -85,7 +85,7 @@ module.exports = React.createClass({ getInitialState: function() {
                     });
                 }
             });
-        } else {
+        } else if (children.constructor === Array) {
             children.forEach(function(item, index) {
                 if (self.state.errors !== null) {
                     var error = self.getError(item.key);
@@ -94,6 +94,13 @@ module.exports = React.createClass({ getInitialState: function() {
                     }
                 }
             });
+        } else if (children.constructor === Object) {
+            if (self.state.errors !== null) {
+                var error = self.getError(children.key);
+                if (typeof error !== 'undefined') {
+                    children = React.cloneElement(children, {error: error});
+                }
+            }
         }
 
         var cancelButton = null
@@ -108,7 +115,7 @@ module.exports = React.createClass({ getInitialState: function() {
         return React.createElement(
             'form',
             {action: this.props.action, onSubmit: this.onSubmit},
-            React.createElement('NotificationSystem', {ref: 'toasts'}),
+            React.createElement(NotificationSystem, {ref: 'toasts'}),
             children,
             React.createElement(
                 'div',
