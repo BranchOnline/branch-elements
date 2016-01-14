@@ -74,9 +74,15 @@ module.exports = React.createClass({ getInitialState: function() {
         && typeof children.props.tabs !== 'undefined' && children.props.tabs !== null
            ) {
             Object.keys(children.props.tabs).forEach(function(tab, index) {
-                var tabChildren = children.props.tabs[tab].props.children;
+                var currentTab = children.props.tabs[tab];
+                var tabChildren = null;
+                if (currentTab.constructor === Array) {
+                    tabChildren = currentTab[0].props.children;
+                } else if (typeof children.props.tabs[tab].props !== 'undefined') {
+                    tabChildren = children.props.tabs[tab].props.children;
+                }
 
-                if (typeof tabChildren !== 'undefined' && tabChildren.constructor === Array) {
+                if (typeof tabChildren !== 'undefined' && tabChildren !== null && tabChildren.constructor === Array) {
                     tabChildren.forEach(function(item, itemIndex) {
                         if (self.state.errors !== null) {
                             var error = self.getError(item.key);
