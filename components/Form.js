@@ -32,8 +32,7 @@ module.exports = React.createClass({ getInitialState: function() {
         var self = this;
 
         var postData = this.props.getPostData();
-
-        $.post(e.target.action, postData, function(response) {
+        var successFunction = function(response) {
             if (response.status === 'success') {
                 self.setState({errors: null});
                 self.props.onError(false);
@@ -54,7 +53,25 @@ module.exports = React.createClass({ getInitialState: function() {
                     level: 'error'
                 });
             }
-        });
+        };
+
+        if (typeof this.props.restUrl === 'undefined') {
+            $.post(e.target.action, postData, successFunction);
+        } else {
+            var url  = this.props.restUrl;
+            var verb = 'POST';
+            if (this.props.recordId) {
+                url += '/' + this.props.recordId;
+                verb = 'PUT';
+            }
+
+            $.ajax({
+                type: verb,
+                url: url,
+                data: postData,
+                success: successFunction,
+            });
+        }
         return false;
     },
     closeForm: function() {
