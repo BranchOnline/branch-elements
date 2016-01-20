@@ -101,19 +101,34 @@ module.exports = React.createClass({
             newRows.splice(index, 1);
             self.setState({ rows: newRows });
 
-            $.ajax({
-                type: 'GET',
-                data: {id: recordId},
-                url: self.props.del.url,
-                success: function(result) {
-                    if (result.status !== 'success') {
+            if (typeof self.props.del.restUrl === 'undefined') {
+                $.ajax({
+                    type: 'GET',
+                    data: {id: recordId},
+                    url: self.props.del.url,
+                    success: function(result) {
+                        if (result.status !== 'success') {
+                            self.setState({ rows: rows });
+                        }
+                    },
+                    error: function() {
                         self.setState({ rows: rows });
                     }
-                },
-                error: function() {
-                    self.setState({ rows: rows });
-                }
-            });
+                });
+            } else {
+                $.ajax({
+                    type: 'DELETE',
+                    url: self.props.del.restUrl + '/' + recordId,
+                    success: function(result, textStatus, jqXHR) {
+                        if (jqXHR.status != 204) {
+                            self.setState({ rows: rows });
+                        }
+                    },
+                    error: function() {
+                        self.setState({ rows: rows });
+                    }
+                });
+            }
         }
 
         sweetAlert({
