@@ -69,7 +69,34 @@ module.exports = React.createClass({ getInitialState: function() {
                 type: verb,
                 url: url,
                 data: postData,
-                success: successFunction,
+                success: function(response) {
+                    self.setState({errors: null});
+                    self.props.onError(false);
+                    if (typeof self.props.onPost === 'function') {
+                        self.props.onPost(response);
+                    }
+
+                    self.refs.toasts.addNotification({
+                        message: 'Your data is successfully saved!',
+                        level: 'success'
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 422) {
+                        var errors = {};
+                        jqXHR.responseJSON.forEach(function(item, i) {
+                            errors[item.field] = [item.message];
+                        });
+
+                        self.setState({ errors: errors });
+                        self.props.onError(true);
+                    }
+
+                    self.refs.toasts.addNotification({
+                        message: errorThrown,
+                        level: 'error'
+                    });
+                }
             });
         }
         return false;
