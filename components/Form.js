@@ -2,20 +2,26 @@ var React    = require('react'),
     ReactDOM = require('react-dom'),
     NotificationSystem = require('react-notification-system');
 
-module.exports = React.createClass({ getInitialState: function() {
+module.exports = React.createClass({
+    getInitialState: function() {
         return {
-            errors: null
+            errors: null,
+            children: this.props.children,
+            test: this.props.children,
         };
     },
+
     propTypes: {
         cancelButton: React.PropTypes.bool,
         onPost: React.PropTypes.func
     },
+
     getDefaultProps: function() {
         return {
             cancelButton: true
         };
     },
+
     getError: function(item) {
         if (this.state.errors === null || typeof this.state.errors === 'undefined') {
             return null;
@@ -27,6 +33,7 @@ module.exports = React.createClass({ getInitialState: function() {
 
         return this.state.errors[item];
     },
+
     onSubmit: function(e) {
         e.preventDefault();
         var self = this;
@@ -34,7 +41,7 @@ module.exports = React.createClass({ getInitialState: function() {
         var postData = this.props.getPostData();
         var successFunction = function(response) {
             if (response.status === 'success') {
-                self.setState({errors: null});
+                self.setState({errors: 'null'});
                 self.props.onError(false);
                 if (typeof self.props.onPost === 'function') {
                     self.props.onPost(response);
@@ -70,7 +77,7 @@ module.exports = React.createClass({ getInitialState: function() {
                 url: url,
                 data: postData,
                 success: function(response) {
-                    self.setState({errors: null});
+                    self.setState({errors: 'null'});
                     self.props.onError(false);
                     if (typeof self.props.onPost === 'function') {
                         self.props.onPost(response);
@@ -89,7 +96,6 @@ module.exports = React.createClass({ getInitialState: function() {
                         });
 
                         self.setState({ errors: errors });
-                        self.props.onError(true);
                     }
 
                     self.refs.toasts.addNotification({
@@ -101,58 +107,67 @@ module.exports = React.createClass({ getInitialState: function() {
         }
         return false;
     },
+
     closeForm: function() {
         ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.setState(nextProps);
     },
+
     onError: function(containsErrors) {
         this.setState({ containsErrors: containsErrors });
     },
-    render: function() {
-        var self     = this;
-        var children = self.props.children;
 
-        if ((children.length === 1 || children.constructor !== Array)
-        && typeof children.props.tabs !== 'undefined' && children.props.tabs !== null
-           ) {
-            Object.keys(children.props.tabs).forEach(function(tab, index) {
-                var currentTab = children.props.tabs[tab];
-                var tabChildren = null;
-                if (currentTab.constructor === Array) {
-                    tabChildren = currentTab[0].props.children;
-                } else if (typeof children.props.tabs[tab].props !== 'undefined') {
-                    tabChildren = children.props.tabs[tab].props.children;
-                }
+    cloneTabs: function() {
+        var self = this;
+        var tabs = this.props.children.props.tabs;
 
-                if (typeof tabChildren !== 'undefined' && tabChildren !== null && tabChildren.constructor === Array) {
-                    tabChildren.forEach(function(item, itemIndex) {
-                        if (self.state.errors !== null) {
-                            var error = self.getError(item.key);
-                            children.props.tabs[tab].props.children[itemIndex] = React.cloneElement(item, {error: error});
-                        }
-                    });
-                }
-            });
-        } else if (children.constructor === Array) {
-            children.forEach(function(item, index) {
-                if (self.state.errors !== null) {
-                    var error = self.getError(item.key);
-                    if (typeof error !== 'undefined') {
-                        children[index] = React.cloneElement(item, {error: error});
-                    }
-                }
-            });
-        } else if (children.constructor === Object) {
-            if (self.state.errors !== null) {
-                var error = self.getError(children.key);
-                if (typeof error !== 'undefined') {
-                    children = React.cloneElement(children, {error: error});
-                }
-            }
+        for (var k in tabs) {
+            tabs[k] = this.cloneFormFields(tabs[k]);
         }
 
+        return React.cloneElement(this.props.children, {tabs: tabs});
+    },
+
+    cloneFormFields: function(fields) {
+        if (fields.constructor !== Array) {
+            return fields;
+        }
+
+        var self = this;
+        return React.Children.map(fields, function (child) {
+            var error;
+            if (typeof child === 'undefined' || child === null) {
+                return;
+            }
+
+            if (self.state.errors !== null) {
+                error = self.state.errors[child.props.field];
+            }
+
+            return React.cloneElement(child, {
+                error: error,
+            });
+        });
+    },
+
+    getClones: function() {
+        var children = this.props.children;
+
+        if (typeof children === 'undefined' || children === null) {
+            return;
+        }
+
+        if (children.constructor !== Array && typeof children.props.tabs !== 'undefined') {
+            return this.cloneTabs();
+        } else {
+            return this.cloneFormFields(this.props.children);
+        }
+    },
+
+    render: function() {
         var cancelButton = null
         if (this.props.cancelButton) {
             cancelButton = React.createElement(
@@ -166,7 +181,7 @@ module.exports = React.createClass({ getInitialState: function() {
             'form',
             {action: this.props.action, onSubmit: this.onSubmit},
             React.createElement(NotificationSystem, {ref: 'toasts'}),
-            children,
+            this.getClones(),
             React.createElement(
                 'div',
                 {className: 'button-holder'},
