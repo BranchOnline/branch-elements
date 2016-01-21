@@ -2,25 +2,32 @@ var React = require('react');
 
 module.exports = React.createClass({
     displayName: 'FormGroup',
+
+    getInitialState: function() {
+        return {
+            error: this.props.error,
+        };
+    },
+
     getDefaultProps: function() {
         return { classNames: [] }
     },
+
     propTypes: {
         children: React.PropTypes.element.isRequired,
         label: React.PropTypes.string,
         htmlFor: React.PropTypes.string,
         id: React.PropTypes.string
     },
-    getErrorField: function(key) {
-        if (typeof this.props.errorHandler !== 'function') {
-            return null;
-        }
 
-        return React.createElement('div', {}. this.props.errorHandler(key));
+    getErrorField: function(key) {
+        return React.createElement('div', {}, this.state.error);
     },
+
     componentWillReceiveProps: function(nextProps) {
         this.setState(nextProps);
     },
+
     render: function() {
         var componentLabel = this.props.label ? (
             React.createElement('label', {className: 'control-label', htmlFor: this.props.key}, this.props.label)
