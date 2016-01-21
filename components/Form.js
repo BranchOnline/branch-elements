@@ -7,7 +7,6 @@ module.exports = React.createClass({
         return {
             errors: null,
             children: this.props.children,
-            test: this.props.children,
         };
     },
 
