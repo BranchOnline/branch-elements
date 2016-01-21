@@ -6,7 +6,6 @@ module.exports = React.createClass({
     getInitialState: function() {
         return {
             errors: null,
-            children: this.props.children,
         };
     },
 
