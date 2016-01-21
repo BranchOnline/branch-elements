@@ -39,7 +39,7 @@ module.exports = React.createClass({
         var postData = this.props.getPostData();
         var successFunction = function(response) {
             if (response.status === 'success') {
-                self.setState({errors: 'null'});
+                self.setState({errors: null});
                 self.props.onError(false);
                 if (typeof self.props.onPost === 'function') {
                     self.props.onPost(response);
@@ -75,7 +75,7 @@ module.exports = React.createClass({
                 url: url,
                 data: postData,
                 success: function(response) {
-                    self.setState({errors: 'null'});
+                    self.setState({errors: null});
                     self.props.onError(false);
                     if (typeof self.props.onPost === 'function') {
                         self.props.onPost(response);
