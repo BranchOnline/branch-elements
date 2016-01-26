@@ -62,6 +62,11 @@ module.exports = React.createClass({
                     React.createElement(
                         'img',
                         {src: '/file/content/render/' + item.id}
+                    ),
+                    React.createElement(
+                        'span',
+                        {},
+                        item.display_name
                     )
                 )
             });
