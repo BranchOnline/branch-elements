@@ -184,7 +184,7 @@ module.exports = React.createClass({
                 'div',
                 {className: 'button-holder'},
                 cancelButton,
-                React.createElement('input', {className: 'btn primary', type: 'submit'})
+                React.createElement('input', {className: 'btn primary', type: 'submit', value: 'Save'})
             )
         );
     }
