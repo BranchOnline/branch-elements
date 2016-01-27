@@ -55,7 +55,7 @@ module.exports = React.createClass({
             this.props.rowClicked(row);
         }
     },
-    onDataSaved: function(data, row) {
+    onDataSaved: function(data, row, s) {
         var rows  = this.state.rows;
         var index = rows.indexOf(row);
 
@@ -67,7 +67,11 @@ module.exports = React.createClass({
                 title: data.title,
             }
             rows.push(row);
-            this.renderForm(this.props.edit.form, row.id, null, row, false);
+            if (typeof this.props.edit !== 'undefined') {
+                this.renderForm(this.props.edit.form, row.id, null, row, false);
+            } else {
+                s.setState({ row: row });
+            }
         }
         this.setState({ rows: rows });
     },
