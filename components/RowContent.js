@@ -32,10 +32,8 @@ module.exports = React.createClass({
             React.createElement(
                 'div',
                 {className: 'row-extras'},
-                [
-                    editButton,
-                    deleteButton
-                ]
+                editButton,
+                deleteButton
             )
         );
     }
