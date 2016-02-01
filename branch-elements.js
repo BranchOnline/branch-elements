@@ -5,3 +5,5 @@ module.exports.SortableList = require('./components/SortableList');
 module.exports.Tab = require('./components/Tab');
 module.exports.ImagePicker = require('./components/ImagePicker');
 module.exports.DateTimePicker = require('./components/DateTimePicker');
+module.exports.FileUploader = require('./components/FileUploader');
+module.exports.LoaderProgress = require('./components/LoaderProgress');
