@@ -7,6 +7,11 @@ module.exports = React.createClass({
             modalIsOpen: false
         }
     },
+
+    deleteImage: function () {
+        this.props.valueLink.requestChange(null);
+    },
+
     fileChosen: function(file_id) {
         this.props.valueLink.requestChange(file_id);
         this.setState({ modalIsOpen: false });
@@ -47,6 +52,14 @@ module.exports = React.createClass({
             )
         );
 
+        var deleteButton = this.props.valueLink.value ? (
+            React.createElement(
+                'a',
+                {className: 'content-editor__delete-element', onClick: this.deleteImage}
+            )
+        ) : null;
+
+
         var modal = this.state.modalIsOpen ? (
             React.createElement(
                 FileModal,
@@ -58,6 +71,7 @@ module.exports = React.createClass({
             'div',
             {className: 'column__file-holder'},
             editButton,
+            deleteButton,
             imagePreview,
             React.createElement(
                 'input',
