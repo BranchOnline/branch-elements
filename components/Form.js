@@ -107,7 +107,11 @@ module.exports = React.createClass({
     },
 
     closeForm: function() {
-        ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
+        if (typeof this.props.closeForm === 'function') {
+            this.props.closeForm();
+        } else {
+            ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this).parentNode);
+        }
     },
 
     componentWillReceiveProps: function(nextProps) {
