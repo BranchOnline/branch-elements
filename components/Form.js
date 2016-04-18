@@ -46,8 +46,10 @@ module.exports = React.createClass({
                 }
 
                 self.refs.toasts.addNotification({
-                    message: 'Your data is successfully saved!',
-                    level: 'success'
+                    title: 'Success!',
+                    message: 'Your data is successfully saved.',
+                    level: 'success',
+                    position: 'br',
                 });
             } else {
                 self.setState({errors: response.errors});
