@@ -181,6 +181,12 @@ module.exports = React.createClass({
             );
         }
 
+        var submitButton = React.createElement('input', {className: 'btn primary', type: 'submit', value: 'Save'});
+
+        if (this.props.submitButton) {
+            submitButton = this.props.submitButton;
+        }
+
         return React.createElement(
             'form',
             {action: this.props.action, onSubmit: this.onSubmit},
@@ -190,7 +196,7 @@ module.exports = React.createClass({
                 'div',
                 {className: 'button-holder'},
                 cancelButton,
-                React.createElement('input', {className: 'btn primary', type: 'submit', value: 'Save'})
+                submitButton
             )
         );
     }
