@@ -75,19 +75,19 @@ module.exports = React.createClass({
         }
         this.setState({ rows: rows });
     },
-    renderForm: function(form, id, parentId, row, unmount) {
+    renderForm: function(form, id, parentId, row, unmount, language_id) {
         var unmount = unmount === false ? false : true;
         var right_column = document.getElementById('right-column');
         if (unmount) {
             ReactDOM.unmountComponentAtNode(right_column);
         }
         ReactDOM.render(
-            React.createElement(form, {id: id, parentId: this.props.parentId, row: row, onDataSaved: this.onDataSaved}),
+            React.createElement(form, {id: id, parentId: this.props.parentId, row: row, onDataSaved: this.onDataSaved, language_id: language_id}),
             right_column
         );
     },
     onEdit: function(row) {
-        this.renderForm(this.props.edit.form, row.id, null, row);
+        this.renderForm(this.props.edit.form, row.id, null, row, true, row.language_id);
     },
     onDelete: function(row) {
         var self = this;
