@@ -61,10 +61,11 @@ module.exports = React.createClass({
 
         if (index !== -1) {
             rows[index].title = data.title;
-        } else if (typeof row === 'undefined') {
+        } else if (typeof row === 'undefined' || row === null) {
             var row = {
                 id: data.id,
                 title: data.title,
+                language_id: data.language_id,
             }
             rows.push(row);
             if (typeof this.props.edit !== 'undefined') {
