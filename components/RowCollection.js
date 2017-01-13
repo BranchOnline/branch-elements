@@ -24,7 +24,7 @@ module.exports = React.createClass({
             data: {id: row.id},
             success: function(resp) {
                 row.subset = resp;
-                row.subview = self.props.renderSubview(row.subset, self.props.nestLevel, row.id);
+                row.subview = self.props.renderSubview(row.subset, self.props.nestLevel, row.id, row.language_id || self.props.language_id);
                 self.setState({rows: rows});
             }
         });
@@ -48,7 +48,7 @@ module.exports = React.createClass({
         this.setState({ selectedRow: row });
 
         if (typeof this.props.click !== 'undefined' && this.props.click !== null) {
-            this.renderForm(this.props.click.form, row.id, null, row);
+            this.renderForm(this.props.click.form, row.id, null, row, true, row.language_id || this.props.language_id);
         } else if (typeof this.props.subsetUrl !== 'undefined' && this.props.subsetUrl !== null) {
             this.getNestedData(row);
         } else if (typeof this.props.rowClicked === 'function') {
@@ -87,7 +87,7 @@ module.exports = React.createClass({
         );
     },
     onEdit: function(row) {
-        this.renderForm(this.props.edit.form, row.id, null, row, true, row.language_id);
+        this.renderForm(this.props.edit.form, row.id, null, row, true, row.language_id || this.props.language_id);
     },
     onDelete: function(row) {
         var self = this;
@@ -148,7 +148,7 @@ module.exports = React.createClass({
         if (typeof item.onCreate === 'function') {
             item.onCreate(this.props.parentId, e);
         } else {
-            this.renderForm(item.form, null);
+            this.renderForm(item.form, null, null, null, true, this.props.language_id);
         }
     },
     sortUpdated: function(newItems) {
