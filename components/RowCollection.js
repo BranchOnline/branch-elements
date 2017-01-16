@@ -69,7 +69,7 @@ module.exports = React.createClass({
             }
             rows.push(row);
             if (typeof this.props.edit !== 'undefined') {
-                this.renderForm(this.props.edit.form, row.id, null, row, false);
+                this.renderForm(this.props.edit.form, row.id, null, row, false, data.language_id);
             } else {
                 s.setState({ row: row });
             }
