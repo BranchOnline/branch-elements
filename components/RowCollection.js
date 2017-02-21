@@ -61,6 +61,7 @@ module.exports = React.createClass({
 
         if (index !== -1) {
             rows[index].title = data.title;
+            rows[index].language_id = data.language_id;
         } else if (typeof row === 'undefined' || row === null) {
             var row = {
                 id: data.id,
